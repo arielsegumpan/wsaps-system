@@ -4,9 +4,12 @@
 
 The **Web-portal E-commerce System** is a full-featured online platform designed for automotive shops to manage and sell their products and services efficiently. The system provides users with a seamless shopping experience, order tracking, and an intuitive admin dashboard.
 
-### Researcher Team:
+## 👨‍💻 Contributors
 
-Jairus Vincent Gale, Gian Carlo Joligon, Art Jamison, Lister
+-   ✅ **Jairus Vincent Gale**
+-   ✅ **Gian Carlo Joligon**
+-   ✅ **Art Jamison**
+-   ✅ **Lister**
 
 ## 🚀 Features
 
