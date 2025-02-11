@@ -20,10 +20,10 @@ Jairus Vincent Gale, Gian Carlo Joligon, Art Jamison, Lister
 
 ## 🛠️ Technologies Used
 
--   **Frontend**: HTML, CSS, JavaScript, Bootstrap
--   **Backend**: PHP (Laravel or CodeIgniter)
+-   **Frontend**: HTML, CSS, JavaScript, Tailwind CSS
+-   **Backend**: PHP (Laravel)
 -   **Database**: MySQL
--   **Payment Integration**: PayPal, Stripe
+-   **Payment Integration**: PayPal, Stripe, Gcash, Debit/Credit Card
 -   **Authentication**: JWT / Laravel Passport
 
 ## 📂 Installation
