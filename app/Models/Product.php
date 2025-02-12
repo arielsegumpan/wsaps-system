@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -28,16 +30,17 @@ class Product extends Model
         'prod_published_at',
         'prod_seo_title',
         'prod_seo_description',
-        'prod_weight_value',
-        'prod_weight_unit',
-        'prod_height_value',
-        'prod_height_unit',
-        'prod_width_value',
-        'prod_width_unit',
-        'prod_depth_value',
-        'prod_depth_unit',
-        'prod_volume_value',
-        'prod_volume_unit',
+        'prod_dimensions'
+        // 'prod_weight_value',
+        // 'prod_weight_unit',
+        // 'prod_height_value',
+        // 'prod_height_unit',
+        // 'prod_width_value',
+        // 'prod_width_unit',
+        // 'prod_depth_value',
+        // 'prod_depth_unit',
+        // 'prod_volume_value',
+        // 'prod_volume_unit',
     ];
 
 
@@ -49,6 +52,17 @@ class Product extends Model
         'is_visible' => 'boolean',
         'prod_backorder' => 'boolean',
         'prod_requires_shipping' => 'boolean',
-        'prod_published_at' => 'date',
+        'prod_published_at' => 'datetime',
+        'prod_dimensions' => 'array', // Cast JSON to array
     ];
+
+    public function productCategories() : BelongsToMany
+    {
+        return $this->belongsToMany(ProductCategory::class, 'product_product_category', 'product_id', 'product_category_id')->withTimestamps();
+    }
+
+    public function productImages() : HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 }

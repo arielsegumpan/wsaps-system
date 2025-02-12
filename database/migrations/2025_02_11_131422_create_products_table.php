@@ -27,33 +27,38 @@ return new class extends Migration
             $table->decimal('prod_old_price', 10, 2)->nullable();
             $table->decimal('prod_price', 10, 2)->nullable();
             $table->decimal('prod_cost', 10, 2)->nullable();
+            $table->string('prod_color')->nullable();
             $table->enum('prod_type', ['deliverable', 'downloadable'])->nullable();
             $table->boolean('prod_backorder')->default(false);
             $table->boolean('prod_requires_shipping')->default(false);
             $table->date('prod_published_at')->nullable();
             $table->string('prod_seo_title', 60)->nullable();
             $table->string('prod_seo_description', 160)->nullable();
-            $table->decimal('prod_weight_value', 10, 2)->nullable()
-                ->default(0.00)
-                ->unsigned();
-            $table->string('prod_weight_unit')->default('kg');
-            $table->decimal('prod_height_value', 10, 2)->nullable()
-                ->default(0.00)
-                ->unsigned();
-            $table->string('prod_height_unit')->default('cm');
-            $table->decimal('prod_width_value', 10, 2)->nullable()
-                ->default(0.00)
-                ->unsigned();
-            $table->string('prod_width_unit')->default('cm');
-            $table->decimal('prod_depth_value', 10, 2)->nullable()
-                ->default(0.00)
-                ->unsigned();
-            $table->string('prod_depth_unit')->default('cm');
-            $table->decimal('prod_volume_value', 10, 2)->nullable()
-                ->default(0.00)
-                ->unsigned();
-            $table->string('prod_volume_unit')->default('l');
+            $table->json('prod_dimensions')->nullable();
+            $table->softDeletes();
             $table->timestamps();
+            $table->index(['prod_name', 'prod_slug', 'prod_sku']);
+
+            // $table->decimal('prod_weight_value', 10, 2)->nullable()
+            //     ->default(0.00)
+            //     ->unsigned();
+            // $table->string('prod_weight_unit')->default('kg');
+            // $table->decimal('prod_height_value', 10, 2)->nullable()
+            //     ->default(0.00)
+            //     ->unsigned();
+            // $table->string('prod_height_unit')->default('cm');
+            // $table->decimal('prod_width_value', 10, 2)->nullable()
+            //     ->default(0.00)
+            //     ->unsigned();
+            // $table->string('prod_width_unit')->default('cm');
+            // $table->decimal('prod_depth_value', 10, 2)->nullable()
+            //     ->default(0.00)
+            //     ->unsigned();
+            // $table->string('prod_depth_unit')->default('cm');
+            // $table->decimal('prod_volume_value', 10, 2)->nullable()
+            //     ->default(0.00)
+            //     ->unsigned();
+            // $table->string('prod_volume_unit')->default('l');
         });
     }
 

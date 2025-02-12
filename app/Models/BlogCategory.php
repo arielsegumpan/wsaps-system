@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Brand extends Model
+class BlogCategory extends Model
 {
     protected $fillable = [
-        'brand_name',
-        'brand_slug',
-        'brand_image',
-        'brand_website',
+        'name',
+        'slug',
+        'description',
         'is_visible',
     ];
 
@@ -22,9 +21,8 @@ class Brand extends Model
         'is_visible' => 'boolean',
     ];
 
-    public function products() : HasMany
+    public function blogPosts() : HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(BlogPost::class);
     }
-
 }
