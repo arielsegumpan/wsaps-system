@@ -61,6 +61,7 @@ class Product extends Model
         return $this->belongsToMany(ProductCategory::class, 'product_product_category', 'product_id', 'product_category_id')->withTimestamps();
     }
 
+
     public function productImages() : HasMany
     {
         return $this->hasMany(ProductImage::class);

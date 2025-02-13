@@ -37,12 +37,12 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ->path('wsaps-dashboard')
             ->login()
             ->colors([
-                'primary' => Color::Cyan,
+                'primary' => Color::Blue,
             ])
             ->font('Plus Jakarta Sans')
             ->spa()
-            ->topNavigation()
-            // ->sidebarCollapsibleOnDesktop()
+            // ->topNavigation()
+            ->sidebarCollapsibleOnDesktop(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -57,7 +57,7 @@ class WsapsDashboardPanelProvider extends PanelProvider
                 return $builder
                 ->items([
                     NavigationItem::make('Dashboard')
-                    ->icon('')
+                    ->icon('heroicon-o-home')
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.wsaps-dashboard.pages.dashboard'))
                     ->url(fn (): string => Dashboard::getUrl())
                 ])

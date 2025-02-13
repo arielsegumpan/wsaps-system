@@ -65,7 +65,7 @@ class BlogPostResource extends Resource
                             ->required()
                             ->live(onBlur: true)
                             ->maxLength(255)
-                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                            ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('slug', Str::slug($state))),
 
                         TextInput::make('slug')
                             ->disabled()
@@ -77,25 +77,6 @@ class BlogPostResource extends Resource
                         RichEditor::make('content')
                             ->required()
                             ->columnSpan('full'),
-
-                        Select::make('user_id')
-                            ->label('Author')
-                            ->relationship(name: 'user', titleAttribute: 'name')
-                            ->searchable()
-                            ->preload()
-                            ->optionsLimit(6)
-                            ->required()
-                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->name)),
-
-                        Select::make('blog_category_id')
-                            ->label('Category')
-                            ->relationship(name: 'blogCategory', titleAttribute: 'name')
-                            ->searchable()
-                            ->preload()
-                            ->optionsLimit(6)
-                            ->required()
-                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->name)),
-
                     ])
                     ->columns(2)
                     ->columnSpan(2),
@@ -115,8 +96,7 @@ class BlogPostResource extends Resource
                         ->label('Published Date')
                         ->native(false)
                         ->columnSpanFull()
-                        ->default(now())
-                        ->minDate(now()),
+                        ->default(now()),
                     ]),
 
                     Section::make('Featured Image')
@@ -132,10 +112,31 @@ class BlogPostResource extends Resource
                                     '1:1',
                                 ])
                                 ->minSize(100)
-                                ->maxSize(2048),
+                                ->maxSize(3048),
                     ])
                     ->collapsible()
                     ->columnSpan(1),
+
+                    Section::make()
+                    ->schema([
+                        Select::make('user_id')
+                            ->label('Author')
+                            ->relationship(name: 'user', titleAttribute: 'name')
+                            ->searchable()
+                            ->preload()
+                            ->optionsLimit(6)
+                            ->required()
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->name)),
+
+                        Select::make('blog_category_id')
+                            ->label('Category')
+                            ->relationship(name: 'blogCategory', titleAttribute: 'name')
+                            ->searchable()
+                            ->preload()
+                            ->optionsLimit(6)
+                            ->required()
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->name)),
+                    ])
                 ])
                 ->columns([
                     'sm' => 1,
@@ -164,7 +165,7 @@ class BlogPostResource extends Resource
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable()
-                    ->weight('bold')
+                    ->weight(FontWeight::ExtraBold)
                     ->description(fn (BlogPost $record): string => $record->slug)
                     ->badge()
                     ->color('primary'),
@@ -254,7 +255,7 @@ class BlogPostResource extends Resource
                     ->modalHeading('Toggle Visibility')
                     ->modalDescription('Toggle visibility is to make the selected blog(s) visible or hidden on the website.')
                     ->modalSubmitActionLabel('Yes')
-                    ->color('primary'),
+                    ->color('success'),
                 ]),
             ])
             ->deferLoading()
@@ -303,6 +304,8 @@ class BlogPostResource extends Resource
                         Split::make([
                             ImageEntry::make('featured_img')
                             ->hiddenLabel()
+                            ->width('100%')
+                            ->height(300)
                             ->grow(false),
 
                             Grid::make(2)
