@@ -152,12 +152,7 @@ class ProductResource extends Resource
                 ->label('Barcode')
                 ->maxLength(255),
 
-                RichEditor::make('prod_desc')
-                ->label('Description')
-                ->columnSpan('full')
-                ->maxLength(65535),
-
-               Group::make()
+                Group::make()
                ->schema([
                     TextInput::make('prod_qty')
                     ->label('Quantity')
@@ -188,7 +183,14 @@ class ProductResource extends Resource
                     'sm' => 1,
                     'md' => 2,
                     'lg' => 4
-               ])
+               ]),
+
+                RichEditor::make('prod_desc')
+                ->label('Description')
+                ->columnSpan('full')
+                ->maxLength(65535),
+
+
            ])->columns([
                'sm' => 1,
                'md' => 2,

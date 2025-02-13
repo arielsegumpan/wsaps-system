@@ -4,8 +4,11 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\BlogCategoryResource;
 use App\Filament\Resources\BlogPostResource;
+use App\Filament\Resources\BrandResource;
 use App\Filament\Resources\ProductCategoryResource;
 use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -41,7 +44,10 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ])
             ->font('Plus Jakarta Sans')
             ->spa()
-            // ->topNavigation()
+            ->brandLogo(asset('imgs/logo-01.png',true))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('imgs/logo-01.png'))
+            ->topNavigation()
             ->sidebarCollapsibleOnDesktop(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -70,7 +76,13 @@ class WsapsDashboardPanelProvider extends PanelProvider
                     NavigationGroup::make('Shop')
                         ->items([
                             ...ProductResource::getNavigationItems(),
+                            ...BrandResource::getNavigationItems(),
                             ...ProductCategoryResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Users')
+                        ->items([
+                            ...UserResource::getNavigationItems(),
+                            ...RoleResource::getNavigationItems(),
                         ]),
                 ]);
             })
@@ -85,10 +97,9 @@ class WsapsDashboardPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class,
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
+
     }
-
-
 }
