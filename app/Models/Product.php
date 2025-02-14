@@ -31,16 +31,6 @@ class Product extends Model
         'prod_seo_title',
         'prod_seo_description',
         'prod_dimensions'
-        // 'prod_weight_value',
-        // 'prod_weight_unit',
-        // 'prod_height_value',
-        // 'prod_height_unit',
-        // 'prod_width_value',
-        // 'prod_width_unit',
-        // 'prod_depth_value',
-        // 'prod_depth_unit',
-        // 'prod_volume_value',
-        // 'prod_volume_unit',
     ];
 
 

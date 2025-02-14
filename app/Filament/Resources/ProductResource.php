@@ -15,6 +15,7 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -127,12 +128,14 @@ class ProductResource extends Resource
            Group::make()
            ->schema([
                 TextInput::make('prod_name')
+                ->label('Product')
                 ->required()
                 ->maxLength(255)
                 ->live(onBlur: true)
                 ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('prod_slug', Str::slug($state))),
 
                 TextInput::make('prod_slug')
+                ->label('Slug')
                 ->disabled()
                 ->dehydrated()
                 ->required()
@@ -158,25 +161,21 @@ class ProductResource extends Resource
                     ->label('Quantity')
                     ->required()
                     ->numeric()
-                    ->default(0),
+                    ->default(1)
+                    ->dehydrated()
+                    ->minValue(1),
 
                     TextInput::make('prod_security_stock')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->dehydrated()
+                    ->minValue(0),
 
-                    ToggleButtons::make('is_visible')
-                    ->label('Is visible to the public?')
-                    ->boolean()
-                    ->grouped()
-                    ->default(true)
-                    ->dehydrated(),
 
-                    ToggleButtons::make('is_featured')
-                    ->label('Is featured?')
-                    ->boolean()
-                    ->grouped()
-                    ->default(false)
-                    ->dehydrated(),
+                    Select::make('productCategories')
+                    ->relationship()
+                    ->multiple()
+                    ->columnSpanFull()
                ])
                ->columnSpanFull()
                ->columns([
@@ -184,6 +183,21 @@ class ProductResource extends Resource
                     'md' => 2,
                     'lg' => 4
                ]),
+
+
+               ToggleButtons::make('is_visible')
+                    ->label('Is visible to the public?')
+                    ->boolean()
+                    ->grouped()
+                    ->default(true)
+                    ->dehydrated(),
+
+                ToggleButtons::make('is_featured')
+                    ->label('Is featured?')
+                    ->boolean()
+                    ->grouped()
+                    ->default(false)
+                    ->dehydrated(),
 
                 RichEditor::make('prod_desc')
                 ->label('Description')
@@ -282,6 +296,8 @@ class ProductResource extends Resource
 
                         TextInput::make('display_order')
                             ->numeric()
+                            ->default(0)
+                            ->minlength(0)
                             ->unique(ProductImage::class, 'display_order', ignoreRecord: true),
 
                         ToggleButtons::make('is_primary')

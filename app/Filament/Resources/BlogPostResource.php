@@ -343,10 +343,14 @@ class BlogPostResource extends Resource
                     ]),
                 InfoSection::make('Content')
                     ->schema([
+
+
                         TextEntry::make('content')
                             ->prose()
                             ->markdown()
                             ->hiddenLabel(),
+
+
                     ])
                     ->collapsible()
             ]);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('brand_name');
             $table->string('brand_slug')->unique();
             $table->string('brand_website')->nullable();
-            $table->string('brand_desc')->nullable();
+            $table->text('brand_desc')->nullable();
             $table->string('brand_image')->nullable();
             $table->boolean('is_visible')->default(0);
             $table->timestamps();

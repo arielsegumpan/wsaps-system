@@ -133,7 +133,7 @@ class ProductCategoryResource extends Resource
                 TextColumn::make('prod_cat_desc')
                 ->label('Description')
                 ->wrap()
-                ->limit(100),
+                ->limit(70),
 
                 ToggleColumn::make('is_visible')
                 ->label('Visibility'),

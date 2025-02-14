@@ -40,14 +40,14 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ->path('wsaps-dashboard')
             ->login()
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Red,
             ])
             ->font('Plus Jakarta Sans')
             ->spa()
             ->brandLogo(asset('imgs/logo-01.png',true))
             ->brandLogoHeight('3rem')
             ->favicon(asset('imgs/logo-01.png'))
-            ->topNavigation()
+            // ->topNavigation()
             ->sidebarCollapsibleOnDesktop(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -68,11 +68,6 @@ class WsapsDashboardPanelProvider extends PanelProvider
                     ->url(fn (): string => Dashboard::getUrl())
                 ])
                 ->groups([
-                    NavigationGroup::make('Posts')
-                        ->items([
-                            ...BlogPostResource::getNavigationItems(),
-                            ...BlogCategoryResource::getNavigationItems(),
-                        ]),
                     NavigationGroup::make('Shop')
                         ->items([
                             ...ProductResource::getNavigationItems(),
@@ -83,6 +78,11 @@ class WsapsDashboardPanelProvider extends PanelProvider
                         ->items([
                             ...UserResource::getNavigationItems(),
                             ...RoleResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Posts')
+                        ->items([
+                            ...BlogPostResource::getNavigationItems(),
+                            ...BlogCategoryResource::getNavigationItems(),
                         ]),
                 ]);
             })
