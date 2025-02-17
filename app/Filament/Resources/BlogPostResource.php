@@ -315,6 +315,7 @@ class BlogPostResource extends Resource
                                         TextEntry::make('title')
                                         ->weight(FontWeight::ExtraBold)
                                         ->size(TextEntry\TextEntrySize::Large)
+                                        ->icon('heroicon-o-newspaper')
                                         ->formatStateUsing(fn (string $state): string => ucwords($state)),
 
                                         TextEntry::make('slug'),
@@ -329,10 +330,12 @@ class BlogPostResource extends Resource
 
                                         TextEntry::make('user.name')
                                         ->label('Author')
+                                        ->icon('heroicon-o-user')
                                         ->formatStateUsing(fn (string $state): string => ucwords($state)),
 
                                         TextEntry::make('blogCategory.name')
                                         ->label('Category')
+                                        ->icon('heroicon-o-swatch')
                                         ->badge()
                                         ->color('warning')
                                         ->formatStateUsing(fn (string $state): string => ucwords($state)),
@@ -342,6 +345,7 @@ class BlogPostResource extends Resource
                         ])->from('lg'),
                     ]),
                 InfoSection::make('Content')
+                    ->icon('heroicon-o-document-text')
                     ->schema([
 
 
