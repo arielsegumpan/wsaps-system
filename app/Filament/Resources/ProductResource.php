@@ -173,9 +173,18 @@ class ProductResource extends Resource
 
 
                     Select::make('productCategories')
-                    ->relationship()
+                    ->label('Categories')
+                    ->relationship(
+                        'productCategories',
+                        'prod_cat_name',
+                        fn ($query) => $query->orderBy('prod_cat_name')
+                    )
                     ->multiple()
+                    ->preload()
+                    ->optionsLimit(6)
+                    ->searchable()
                     ->columnSpanFull()
+                    ->required(),
                ])
                ->columnSpanFull()
                ->columns([

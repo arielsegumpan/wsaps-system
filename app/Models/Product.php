@@ -48,7 +48,7 @@ class Product extends Model
 
     public function productCategories() : BelongsToMany
     {
-        return $this->belongsToMany(ProductCategory::class, 'product_product_category', 'product_id', 'product_category_id')->withTimestamps();
+        return $this->belongsToMany(ProductCategory::class, 'product_category_product', 'product_id', 'product_category_id')->withTimestamps();
     }
 
 

@@ -304,7 +304,7 @@ class BlogPostResource extends Resource
                         Split::make([
                             ImageEntry::make('featured_img')
                             ->hiddenLabel()
-                            ->width('100%')
+                            ->width(300)
                             ->height(300)
                             ->grow(false),
 
