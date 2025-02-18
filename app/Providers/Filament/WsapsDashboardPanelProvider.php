@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Resources\BlogCategoryResource;
 use App\Filament\Resources\BlogPostResource;
 use App\Filament\Resources\BrandResource;
+use App\Filament\Resources\OrderResource;
 use App\Filament\Resources\ProductCategoryResource;
 use App\Filament\Resources\ProductResource;
 use App\Filament\Resources\RoleResource;
@@ -44,10 +45,10 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ])
             ->font('Plus Jakarta Sans')
             ->spa()
-            ->brandLogo(asset('imgs/logo-01.png',true))
+            ->brandLogo(asset('imgs/logo-01.png', true))
             ->brandLogoHeight('3rem')
             ->favicon(asset('imgs/logo-01.png'))
-            // ->topNavigation()
+            ->topNavigation()
             ->sidebarCollapsibleOnDesktop(true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -61,30 +62,35 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                ->items([
-                    NavigationItem::make('Dashboard')
-                    ->icon('heroicon-o-home')
-                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.wsaps-dashboard.pages.dashboard'))
-                    ->url(fn (): string => Dashboard::getUrl())
-                ])
-                ->groups([
-                    NavigationGroup::make('Shop')
-                        ->items([
-                            ...ProductResource::getNavigationItems(),
-                            ...BrandResource::getNavigationItems(),
-                            ...ProductCategoryResource::getNavigationItems(),
-                        ]),
-                    NavigationGroup::make('Users')
-                        ->items([
-                            ...UserResource::getNavigationItems(),
-                            ...RoleResource::getNavigationItems(),
-                        ]),
-                    NavigationGroup::make('Posts')
-                        ->items([
-                            ...BlogPostResource::getNavigationItems(),
-                            ...BlogCategoryResource::getNavigationItems(),
-                        ]),
-                ]);
+                    ->items([
+                        NavigationItem::make('Dashboard')
+                            ->icon('heroicon-o-presentation-chart-bar')
+                            ->isActiveWhen(fn(): bool => request()->routeIs('filament.wsaps-dashboard.pages.dashboard'))
+                            ->url(fn(): string => Dashboard::getUrl())
+                    ])
+                    ->groups([
+                        NavigationGroup::make('Shop')
+                            ->icon('heroicon-o-building-storefront')
+                            ->items([
+                                ...OrderResource::getNavigationItems(),
+                                ...ProductResource::getNavigationItems(),
+                                ...BrandResource::getNavigationItems(),
+                                ...ProductCategoryResource::getNavigationItems(),
+                            ]),
+                        NavigationGroup::make('Posts')
+                            ->icon('heroicon-o-pencil-square')
+                            ->items([
+                                ...BlogPostResource::getNavigationItems(),
+                                ...BlogCategoryResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make('Accounts')
+                            ->icon('heroicon-o-user')
+                            ->items([
+                                ...UserResource::getNavigationItems(),
+                                ...RoleResource::getNavigationItems(),
+                            ]),
+                    ]);
             })
             ->middleware([
                 EncryptCookies::class,
@@ -100,6 +106,5 @@ class WsapsDashboardPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
-
     }
 }

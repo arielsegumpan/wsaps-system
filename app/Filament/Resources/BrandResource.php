@@ -84,7 +84,7 @@ class BrandResource extends Resource
                             ->dehydrated(),
                         ]),
 
-                        Section::make('Image')
+                        Section::make()
                             ->schema([
 
                                 FileUpload::make('brand_image')
@@ -118,7 +118,7 @@ class BrandResource extends Resource
             ->columns([
 
                 ImageColumn::make('brand_image')
-                ->label('Image')
+                ->label('Brand Image')
                 ->square(),
 
 

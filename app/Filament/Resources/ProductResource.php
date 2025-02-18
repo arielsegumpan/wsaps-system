@@ -2,37 +2,39 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\ProductTypeEnum;
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
-use App\Models\ProductImage;
 use Filament\Forms;
-use Filament\Forms\Components\ColorPicker;
+use Filament\Tables;
+use App\Models\Product;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\ProductImage;
+use App\Enums\ProductTypeEnum;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Split;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Split;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\ToggleButtons;
 use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
 
 
     public static function form(Form $form): Form
@@ -60,7 +62,42 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+
+                ImageColumn::make('productImages.url')
+                ->label('Images')
+                ->circular()
+                ->stacked()
+                ->limit(3),
+
+                TextColumn::make('prod_sku')
+                ->searchable()
+                ->sortable()
+                ->label('SKU')
+                ->badge()
+                ->color('warning')
+                ->copyable()
+                ->toolTip('Copy SKU'),
+
+                TextColumn::make('prod_name')
+                ->searchable()
+                ->sortable()
+                ->label('Product')
+                ->formatStateUsing(fn(string $state) : string => ucwords($state)),
+
+                TextColumn::make('prod_type')
+                ->searchable()
+                ->sortable()
+                ->label('Type')
+                ->formatStateUsing(fn(string $state) : string => ProductTypeEnum::from($state)->name),
+
+
+                TextColumn::make('prod_desc')
+                ->label('Description')
+                ->wrap()
+                ->markdown()
+                ->limit(60),
+
+
             ])
             ->filters([
                 //
