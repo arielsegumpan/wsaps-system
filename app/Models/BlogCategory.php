@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class BlogCategory extends Model
 {
     protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'is_visible',
+        'cat_name',
+        'cat_slug',
+        'cat_description',
+        'cat_is_visible',
     ];
 
     /**

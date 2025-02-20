@@ -16,7 +16,10 @@ use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
@@ -36,6 +39,10 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -45,10 +52,10 @@ class ProductResource extends Resource
                 ->description('Fill the form below to create a new product.')
                 ->schema([
                     Section::make('Product Details')
-                    ->schema([static::getDetailsFormSchema()]),
+                    ->schema(static::getDetailsFormSchema()),
 
                     Section::make()
-                    ->schema([static::getProductPricesFormSchema()]),
+                    ->schema(static::getProductPricesFormSchema()),
 
                     Section::make()
                     ->schema([static::getProductPhotosFormSchema()])
@@ -74,7 +81,7 @@ class ProductResource extends Resource
                 ->sortable()
                 ->label('SKU')
                 ->badge()
-                ->color('warning')
+                ->color('success')
                 ->copyable()
                 ->toolTip('Copy SKU'),
 
@@ -82,20 +89,40 @@ class ProductResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->label('Product')
-                ->formatStateUsing(fn(string $state) : string => ucwords($state)),
+                ->formatStateUsing(fn(string $state) : string => ucwords($state))
+                ->description(fn (Model $record) => $record->brand->brand_name),
 
                 TextColumn::make('prod_type')
                 ->searchable()
                 ->sortable()
                 ->label('Type')
-                ->formatStateUsing(fn(string $state) : string => ProductTypeEnum::from($state)->name),
+                ->icons([
+                    'heroicon-o-truck' => ProductTypeEnum::DELIVERABLE->value,
+                    'heroicon-o-arrow-down-tray' => ProductTypeEnum::DOWNLOADABLE->value,
+                ])
+                ->colors([
+                    'primary' => ProductTypeEnum::DELIVERABLE->value,
+                    'success' => ProductTypeEnum::DOWNLOADABLE->value,
+                ])
+                ->badge()
+                ->formatStateUsing(fn(string $state) : string => ucwords($state)),
 
+                TextColumn::make('prod_price')
+                ->label('Price')
+                ->sortable()
+                ->money('PHP'),
+
+                TextColumn::make('productCategories.prod_cat_name')
+                ->badge()
+                ->color('warning')
+                ->formatStateUsing(fn (string $state) : string => ucwords($state)),
 
                 TextColumn::make('prod_desc')
                 ->label('Description')
                 ->wrap()
                 ->markdown()
-                ->limit(60),
+                ->limit(60)
+                ->toggleable(isToggledHiddenByDefault: true),
 
 
             ])
@@ -137,7 +164,7 @@ class ProductResource extends Resource
                 ->icon('heroicon-m-plus')
                 ->label(__('New Product')),
             ])
-            ->emptyStateIcon('heroicon-o-shopping-bag')
+            ->emptyStateIcon('heroicon-o-squares-plus')
             ->emptyStateHeading('No Products are created')
             ->defaultSort('created_at', 'desc');
     }
@@ -155,6 +182,7 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'view' => Pages\ViewProduct::route('/{record}')
         ];
     }
 
@@ -164,52 +192,75 @@ class ProductResource extends Resource
         return [
            Group::make()
            ->schema([
+
                 TextInput::make('prod_name')
-                ->label('Product')
-                ->required()
-                ->maxLength(255)
-                ->live(onBlur: true)
-                ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('prod_slug', Str::slug($state))),
+                    ->label('Product')
+                    ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('prod_slug', Str::slug($state))),
 
                 TextInput::make('prod_slug')
-                ->label('Slug')
-                ->disabled()
-                ->dehydrated()
-                ->required()
-                ->maxLength(255)
-                ->unique(Product::class, 'prod_slug', ignoreRecord: true),
+                    ->label('Slug')
+                    ->disabled()
+                    ->dehydrated()
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(Product::class, 'prod_slug', ignoreRecord: true),
 
                 TextInput::make('prod_sku')
-                ->label('SKU')
-                ->default('SKU-'. date('His-') . strtoupper(Str::random(6)))
-                ->disabled()
-                ->dehydrated()
-                ->required()
-                ->maxLength(32)
-                ->unique(Product::class, 'prod_sku', ignoreRecord: true),
-
-                TextInput::make('prod_barcode')
-                ->label('Barcode')
-                ->maxLength(255),
+                    ->label('SKU')
+                    ->default('SKU-'. date('His-') . strtoupper(Str::random(6)))
+                    ->disabled()
+                    ->dehydrated()
+                    ->required()
+                    ->maxLength(32)
+                    ->unique(Product::class, 'prod_sku', ignoreRecord: true),
 
                 Group::make()
-               ->schema([
+                ->schema([
+                    TextInput::make('prod_barcode')
+                    ->label('Barcode')
+                    ->maxLength(255),
+
+                    Select::make('brand_id')
+                    ->label('Brand')
+                    ->relationship(
+                        'brand',
+                        'brand_name',
+                        fn ($query) => $query->orderBy('brand_name')
+                    )
+                    ->native(false)
+                    ->preload()
+                    ->optionsLimit(6)
+                    ->searchable()
+                    ->required(),
+
+
                     TextInput::make('prod_qty')
-                    ->label('Quantity')
-                    ->required()
-                    ->numeric()
-                    ->default(1)
-                    ->dehydrated()
-                    ->minValue(1),
+                        ->label('Quantity')
+                        ->required()
+                        ->numeric()
+                        ->default(1)
+                        ->dehydrated()
+                        ->minValue(1),
 
                     TextInput::make('prod_security_stock')
-                    ->numeric()
-                    ->default(0)
-                    ->dehydrated()
-                    ->minValue(0),
+                        ->label('Security Stock')
+                        ->numeric()
+                        ->default(5)
+                        ->dehydrated()
+                        ->minValue(0),
+                ])
+                ->columnSpanFull()
+                ->columns([
+                    'sm' => 1,
+                    'md' => 2,
+                    'lg' => 4
+                ]),
 
 
-                    Select::make('productCategories')
+                Select::make('productCategories')
                     ->label('Categories')
                     ->relationship(
                         'productCategories',
@@ -221,29 +272,110 @@ class ProductResource extends Resource
                     ->optionsLimit(6)
                     ->searchable()
                     ->columnSpanFull()
-                    ->required(),
-               ])
-               ->columnSpanFull()
-               ->columns([
+                    ->required()
+                    ->createOptionForm([
+
+                        Split::make([
+                            Section::make('Create a new product category')
+                                ->icon('heroicon-o-queue-list')
+                                ->schema([
+                                    TextInput::make('prod_cat_name')
+                                    ->label('Name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('prod_cat_slug', Str::slug($state))),
+
+                                    TextInput::make('prod_cat_slug')
+                                        ->label('Slug')
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->required()
+                                        ->maxLength(255),
+
+                                    Textarea::make('prod_cat_desc')
+                                        ->rows(6)
+                                        ->maxLength(5000)
+                                        ->columnSpanFull(),
+                            ]),
+
+                            Group::make()
+                            ->schema([
+
+                                Section::make()
+                                ->schema([
+                                    ToggleButtons::make('is_visible')
+                                    ->label('Is visible to the public?')
+                                    ->boolean()
+                                    ->grouped()
+                                    ->default(true)
+                                    ->dehydrated(),
+                                ]),
+
+                                Section::make('Image')
+                                    ->schema([
+
+                                        FileUpload::make('prod_cat_image')
+                                            ->image()
+                                            ->hiddenLabel()
+                                            ->imageEditor()
+                                            ->imageEditorAspectRatios([
+                                                '16:9',
+                                                '4:3',
+                                                '1:1',
+                                            ])
+                                            ->maxSize(3048),
+                                ])
+                                ->collapsible()
+                                ->columnSpan(1),
+                            ])
+                            ->columns([
+                                'sm' => 1,
+                                'md' => 1,
+                                'lg' => 1,
+                            ]),
+                        ])
+                        ->columnSpanFull()
+                    ]),
+
+                Group::make()
+                ->schema([
+                    ToggleButtons::make('is_visible')
+                        ->label('Is visible to the public?')
+                        ->boolean()
+                        ->grouped()
+                        ->default(true)
+                        ->dehydrated(),
+
+                    ToggleButtons::make('is_featured')
+                        ->label('Is featured?')
+                        ->boolean()
+                        ->grouped()
+                        ->default(false)
+                        ->dehydrated(),
+
+                    ToggleButtons::make('prod_requires_shipping')
+                        ->label('Is require shipping?')
+                        ->required()
+                        ->boolean()
+                        ->grouped()
+                        ->default(false)
+                        ->dehydrated(),
+
+                    ToggleButtons::make('prod_backorder')
+                        ->label('Is backorder allowed?')
+                        ->required()
+                        ->boolean()
+                        ->grouped()
+                        ->default(true)
+                        ->dehydrated(),
+                ])
+                ->columnSpan('full')
+                ->columns([
                     'sm' => 1,
                     'md' => 2,
                     'lg' => 4
-               ]),
-
-
-               ToggleButtons::make('is_visible')
-                    ->label('Is visible to the public?')
-                    ->boolean()
-                    ->grouped()
-                    ->default(true)
-                    ->dehydrated(),
-
-                ToggleButtons::make('is_featured')
-                    ->label('Is featured?')
-                    ->boolean()
-                    ->grouped()
-                    ->default(false)
-                    ->dehydrated(),
+                ]),
 
                 RichEditor::make('prod_desc')
                 ->label('Description')
@@ -253,8 +385,8 @@ class ProductResource extends Resource
 
            ])->columns([
                'sm' => 1,
-               'md' => 2,
-               'lg' => 2,
+               'md' => 3,
+               'lg' => 3,
            ])->columnSpanFull()
 
         ];

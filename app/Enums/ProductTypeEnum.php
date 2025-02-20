@@ -10,6 +10,14 @@ enum ProductTypeEnum: string implements HasIcon, HasColor
     case DELIVERABLE = 'deliverable';
     case DOWNLOADABLE = 'downloadable';
 
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::DELIVERABLE => 'deliverable',
+            self::DOWNLOADABLE => 'downloadable',
+        };
+    }
+
     public function getIcon(): ?string
     {
         return match ($this) {

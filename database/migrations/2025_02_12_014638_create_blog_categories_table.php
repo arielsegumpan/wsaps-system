@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('blog_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->boolean('is_visible')->default(false);
+            $table->string('cat_name');
+            $table->string('cat_slug')->unique();
+            $table->text('cat_description')->nullable();
+            $table->boolean('cat_is_visible')->default(false);
             $table->string('seo_title', 60)->nullable();
             $table->string('seo_description', 160)->nullable();
             $table->timestamps();

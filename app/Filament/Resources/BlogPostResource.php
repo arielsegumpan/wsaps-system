@@ -2,41 +2,43 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BlogPostResource\Pages;
-use App\Filament\Resources\BlogPostResource\RelationManagers;
-use App\Models\BlogPost;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\BlogPost;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\BlogCategory;
+use Illuminate\Support\Carbon;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\Grid;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Split;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Group as InfoGroup;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\Section as InfoSection;
-use Filament\Infolists\Components\Split;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Infolists\Components\ImageEntry;
+use App\Filament\Resources\BlogPostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
+use Filament\Infolists\Components\Group as InfoGroup;
+use Filament\Infolists\Components\Section as InfoSection;
+use App\Filament\Resources\BlogPostResource\RelationManagers;
 
 class BlogPostResource extends Resource
 {
@@ -90,6 +92,8 @@ class BlogPostResource extends Resource
                         ToggleButtons::make('is_visible')
                         ->label('Is visible to the public?')
                         ->boolean()
+                        ->default(true)
+                        ->dehydrated()
                         ->grouped(),
 
                         DatePicker::make('published_at')
@@ -111,7 +115,6 @@ class BlogPostResource extends Resource
                                     '4:3',
                                     '1:1',
                                 ])
-                                ->minSize(100)
                                 ->maxSize(3048),
                     ])
                     ->collapsible()
@@ -130,12 +133,58 @@ class BlogPostResource extends Resource
 
                         Select::make('blog_category_id')
                             ->label('Category')
-                            ->relationship(name: 'blogCategory', titleAttribute: 'name')
+                            ->relationship(name: 'blogCategory', titleAttribute: 'cat_name')
                             ->searchable()
                             ->preload()
                             ->optionsLimit(6)
                             ->required()
-                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->name)),
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => ucwords($record->cat_name))
+                            ->createOptionForm([
+
+                                Section::make('')
+                                ->schema([
+
+                                    Group::make()
+                                    ->schema([
+                                        TextInput::make('cat_name')
+                                            ->label('Name')
+                                            ->required()
+                                            ->placeholder('Enter the name of the category')
+                                            ->live(onBlur: true)
+                                            ->maxLength(255)
+                                            ->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('cat_slug', Str::slug($state))),
+                                            // ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('cat_slug', Str::slug($state)) : null),
+
+
+                                        TextInput::make('cat_slug')
+                                            ->label('Slug')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->unique(BlogCategory::class, 'cat_slug', ignoreRecord: true),
+                                    ])
+                                    ->columns([
+                                        'sm' => 1,
+                                        'md' => 2,
+                                    ]),
+
+                                    ToggleButtons::make('cat_is_visible')
+                                    ->label('Is visible to the public?')
+                                    ->boolean()
+                                    ->default(true)
+                                    ->dehydrated()
+                                    ->grouped(),
+
+                                    Textarea::make('cat_description')
+                                        ->label('Description')
+                                        ->placeholder('Enter the description of the category')
+                                        ->rows(6)
+                                        ->maxLength(3000)
+                                        ->columnSpanFull(),
+                                ])
+
+                            ]),
                     ])
                 ])
                 ->columns([
@@ -176,7 +225,7 @@ class BlogPostResource extends Resource
                     ->label('Author')
                     ->formatStateUsing(fn (string $state): string => ucwords($state)),
 
-                TextColumn::make('blogCategory.name')
+                TextColumn::make('blogCategory.cat_name')
                     ->searchable()
                     ->sortable()
                     ->label('Category')
@@ -333,7 +382,7 @@ class BlogPostResource extends Resource
                                         ->icon('heroicon-o-user')
                                         ->formatStateUsing(fn (string $state): string => ucwords($state)),
 
-                                        TextEntry::make('blogCategory.name')
+                                        TextEntry::make('blogCategory.cat_name')
                                         ->label('Category')
                                         ->icon('heroicon-o-swatch')
                                         ->badge()

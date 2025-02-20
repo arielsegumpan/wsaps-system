@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -46,6 +47,10 @@ class Product extends Model
         'prod_dimensions' => 'array', // Cast JSON to array
     ];
 
+    public function brand() : BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
     public function productCategories() : BelongsToMany
     {
         return $this->belongsToMany(ProductCategory::class, 'product_category_product', 'product_id', 'product_category_id')->withTimestamps();
@@ -55,5 +60,10 @@ class Product extends Model
     public function productImages() : HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function orderItems() : HasMany
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

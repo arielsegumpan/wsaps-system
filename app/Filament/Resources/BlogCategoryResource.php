@@ -2,22 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BlogCategoryResource\Pages;
-use App\Filament\Resources\BlogCategoryResource\RelationManagers;
-use App\Models\BlogCategory;
 use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\BlogCategory;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
+use App\Filament\Resources\BlogCategoryResource\Pages;
+use App\Filament\Resources\BlogCategoryResource\RelationManagers;
 
 class BlogCategoryResource extends Resource
 {
@@ -44,21 +45,28 @@ class BlogCategoryResource extends Resource
                             ->placeholder('Enter the name of the category')
                             ->live(onBlur: true)
                             ->maxLength(255)
-                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('cat_slug', Str::slug($state)) : null),
 
 
-                        TextInput::make('slug')
+                        TextInput::make('cat_slug')
                             ->label('Slug')
                             ->disabled()
                             ->dehydrated()
                             ->required()
                             ->maxLength(255)
-                            ->unique(BlogCategory::class, 'slug', ignoreRecord: true),
+                            ->unique(BlogCategory::class, 'cat_slug', ignoreRecord: true),
                     ])
                     ->columns([
                         'sm' => 1,
                         'md' => 2,
                     ]),
+
+                    ToggleButtons::make('cat_is_visible')
+                        ->label('Is visible to the public?')
+                        ->boolean()
+                        ->default(true)
+                        ->dehydrated()
+                        ->grouped(),
 
                     Textarea::make('description')
                         ->label('Description')
