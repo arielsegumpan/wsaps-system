@@ -1,5 +1,7 @@
 # Web-portal E-commerce System for Automotive Shop
 
+![FireShot Capture 089 - Products - WSAPS System -  wsaps-system test](https://github.com/user-attachments/assets/e32dc275-b593-46e2-8b75-1922a9d22fbf)
+
 ## 📌 Overview
 
 The **Web-portal E-commerce System** is a full-featured online platform designed for automotive shops to manage and sell their products and services efficiently. The system provides users with a seamless shopping experience, order tracking, and an intuitive admin dashboard.

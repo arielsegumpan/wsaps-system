@@ -10,27 +10,37 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use App\Enums\ProductTypeEnum;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Grid;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Infolists\Components\ImageEntry;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Components\Section as InfoSection;
 use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
@@ -38,6 +48,8 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getNavigationBadge(): ?string
     {
@@ -48,8 +60,7 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Create a new product')
-                ->description('Fill the form below to create a new product.')
+                Section::make()
                 ->schema([
                     Section::make('Product Details')
                     ->schema(static::getDetailsFormSchema()),
@@ -70,71 +81,97 @@ class ProductResource extends Resource
         return $table
             ->columns([
 
-                ImageColumn::make('productImages.url')
-                ->label('Images')
-                ->circular()
-                ->stacked()
-                ->limit(3),
+                Grid::make([
+                    'lg' => 3,
+                    '2xl' => 3,
+                ]),
 
-                TextColumn::make('prod_sku')
-                ->searchable()
-                ->sortable()
-                ->label('SKU')
-                ->badge()
-                ->color('success')
-                ->copyable()
-                ->toolTip('Copy SKU'),
+                Tables\Columns\Layout\Stack::make([
 
-                TextColumn::make('prod_name')
-                ->searchable()
-                ->sortable()
-                ->label('Product')
-                ->formatStateUsing(fn(string $state) : string => ucwords($state))
-                ->description(fn (Model $record) => $record->brand->brand_name),
+                        Tables\Columns\Layout\Split::make([
+                            TextColumn::make('prod_sku')
+                            ->searchable()
+                            ->sortable()
+                            ->label('SKU')
+                            ->badge()
+                            ->color('success')
+                            ->copyable()
+                            ->size(TextColumn\TextColumnSize::Large)
+                            ->weight(FontWeight::Bold),
 
-                TextColumn::make('prod_type')
-                ->searchable()
-                ->sortable()
-                ->label('Type')
-                ->icons([
-                    'heroicon-o-truck' => ProductTypeEnum::DELIVERABLE->value,
-                    'heroicon-o-arrow-down-tray' => ProductTypeEnum::DOWNLOADABLE->value,
-                ])
-                ->colors([
-                    'primary' => ProductTypeEnum::DELIVERABLE->value,
-                    'success' => ProductTypeEnum::DOWNLOADABLE->value,
-                ])
-                ->badge()
-                ->formatStateUsing(fn(string $state) : string => ucwords($state)),
+                            ColorColumn::make('prod_color')
+                            ->label('Color')
+                        ]),
 
-                TextColumn::make('prod_price')
-                ->label('Price')
-                ->sortable()
-                ->money('PHP'),
+                        ImageColumn::make('productImages.url')
+                        ->label('Images')
+                        ->limit(1)
+                        ->height('100%')
+                        ->width('100%'),
 
-                TextColumn::make('productCategories.prod_cat_name')
-                ->badge()
-                ->color('warning')
-                ->formatStateUsing(fn (string $state) : string => ucwords($state)),
+                    Tables\Columns\Layout\Stack::make([
 
-                TextColumn::make('prod_desc')
-                ->label('Description')
-                ->wrap()
-                ->markdown()
-                ->limit(60)
-                ->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('prod_name')
+                        ->searchable()
+                        ->sortable()
+                        ->label('Product')
+                        ->formatStateUsing(fn(string $state) : string => ucwords($state))
+                        ->description(fn (Model $record) => ucwords($record->brand->brand_name))
+                        ->size(TextColumn\TextColumnSize::Large)
+                        ->weight(FontWeight::Bold),
 
+                        Tables\Columns\Layout\Split::make([
 
+                            TextColumn::make('prod_price')
+                            ->label('Price')
+                            ->sortable()
+                            ->money('PHP'),
+
+                            TextColumn::make('prod_qty')
+                            ->label('Qty.')
+                            ->badge()
+                            ->color('success')
+                            ->weight(FontWeight::Bold)
+                            ->tooltip('Product stock quantity'),
+
+                            IconColumn::make('is_visible')
+                            ->label('Is Visible')
+                            ->tooltip('Visible to the public')
+                            ->boolean()
+
+                        ]),
+                    ]),
+                ])->space(3),
+                Tables\Columns\Layout\Panel::make([
+                    Tables\Columns\Layout\Split::make([
+
+                        TextColumn::make('productCategories.prod_cat_name')
+                        ->badge()
+                        ->color('warning')
+                        ->formatStateUsing(fn (string $state) : string => ucwords($state)),
+
+                    ]),
+                ])->collapsible(),
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
+            ->paginated([
+                9,
+                18,
+                36,
+                'all',
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])->tooltip('Actions')
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ActionGroup::make([
+                //     Tables\Actions\EditAction::make(),
+                //     Tables\Actions\DeleteAction::make(),
+                // ])->tooltip('Actions')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -504,5 +541,51 @@ class ProductResource extends Resource
              ->addActionLabel('Add more')
             ->reorderable()
             ->collapsible();
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewProduct::class,
+            Pages\EditProduct::class,
+        ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                InfoSection::make()
+                ->schema([
+
+                    ImageEntry::make('productImages.url')
+                    ->hiddenLabel()
+                    ->stacked()
+                    ->limit(3)
+                    ->height(100)
+                    ->square(),
+
+                    TextEntry::make('prod_name')
+                    ->label('Product')
+                    ->size(TextEntry\TextEntrySize::Large)
+                    ->weight(FontWeight::ExtraBold)
+                    ->formatStateUsing(fn (string $state) : string => ucwords($state) ),
+
+                    TextEntry::make('prod_sku')
+                    ->label('SKU')
+                    ->size(TextEntry\TextEntrySize::Large)
+                    ->weight(FontWeight::ExtraBold)
+                    ->badge()
+                    ->color('success')
+                    ->copyable()
+                    ->toolTip('Copy SKU'),
+
+
+
+
+
+
+                ])
+            ]);
     }
 }
