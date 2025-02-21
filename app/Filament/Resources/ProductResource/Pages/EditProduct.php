@@ -35,4 +35,12 @@ class EditProduct extends EditRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['prod_name'] = ucwords($data['prod_name']);
+        $data['prod_slug'] = strtoupper($data['prod_slug']);
+
+        return $data;
+    }
 }

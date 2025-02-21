@@ -10,6 +10,7 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\CreateRecord\Concerns\HasWizard;
+use Illuminate\Support\Str;
 
 class CreateProduct extends CreateRecord
 {
@@ -36,14 +37,14 @@ class CreateProduct extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
-    // protected function afterCreate(): void
-    // {
-    //     $dogId = $this->record->dog_id;
-    //     if ($dogId) {
-    //        $this->record->adoption?->query()->where('id', $dogId)->update(['status' => 'pending']);
-    //     }
-    // }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
 
+        $data['prod_name'] = ucwords($data['prod_name']);
+        $data['prod_slug'] = strtoupper($data['prod_slug']);
+
+        return $data;
+    }
 
      /** @return Step[] */
      protected function getSteps(): array
