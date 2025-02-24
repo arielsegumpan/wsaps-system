@@ -14,7 +14,7 @@
                         "isAutoPlay": true
                     }' class="relative">
 
-                    <div class="flex space-x-2 hs-carousel">
+                    <div class="flex space-x-2 lg:flex-row hs-carousel">
                         <!-- Thumbnail Preview -->
                         <div class="flex-none">
                             <div class="flex flex-col overflow-y-auto hs-carousel-pagination max-h-96 gap-y-2
@@ -138,10 +138,74 @@
 
 
         <div class="mt-5 md:mt-10">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ __('Description') }}</h2>
-            <div class="mt-2 text-gray-500 dark:text-neutral-400">
-                {!! str($product->prod_desc)->sanitizeHtml() !!}
+
+            <div class="grid lg:grid-cols-3 gap-y-8 lg:gap-y-0 lg:gap-x-6">
+                <!-- Content -->
+                <div class="lg:col-span-2">
+                    <div class="py-8 lg:pe-8">
+                        <div class="space-y-5 text-gray-500 lg:space-y-8 dark:text-white">
+                            <h2 class="text-lg font-bold lg:text-3xl dark:text-white">{{ __('Description') }}</h2>
+
+                            {!! str($product->prod_desc)->sanitizeHtml() !!}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Content -->
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 lg:w-full lg:h-full lg:bg-gradient-to-r lg:from-gray-50 lg:via-transparent lg:to-transparent dark:from-neutral-800">
+                    <div class="sticky top-0 py-8 start-0 lg:ps-8">
+
+                        <div class="space-y-6">
+                            <!-- Media -->
+                            <a class="flex items-center group gap-x-6 focus:outline-none" href="#">
+                            <div class="grow">
+                                <span class="text-sm font-bold text-gray-800 group-hover:text-red-600 group-focus:text-red-600 dark:text-neutral-200 dark:group-hover:text-red-500 dark:group-focus:text-red-500">
+                                5 Reasons to Not start a UX Designer Career in 2022/2023
+                                </span>
+                            </div>
+
+                            <div class="relative overflow-hidden rounded-lg shrink-0 size-20">
+                                <img class="absolute top-0 object-cover rounded-lg size-full start-0" src="https://images.unsplash.com/photo-1567016526105-22da7c13161a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80" alt="Blog Image">
+                            </div>
+                            </a>
+                            <!-- End Media -->
+
+                            <!-- Media -->
+                            <a class="flex items-center group gap-x-6 focus:outline-none" href="#">
+                            <div class="grow">
+                                <span class="text-sm font-bold text-gray-800 group-hover:text-red-600 group-focus:text-red-600 dark:text-neutral-200 dark:group-hover:text-red-500 dark:group-focus:text-red-500">
+                                If your UX Portfolio has this 20% Well Done, it Will Give You an 80% Result
+                                </span>
+                            </div>
+
+                            <div class="relative overflow-hidden rounded-lg shrink-0 size-20">
+                                <img class="absolute top-0 object-cover rounded-lg size-full start-0" src="https://images.unsplash.com/photo-1542125387-c71274d94f0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80" alt="Blog Image">
+                            </div>
+                            </a>
+                            <!-- End Media -->
+
+                            <!-- Media -->
+                            <a class="flex items-center group gap-x-6 focus:outline-none" href="#">
+                            <div class="grow">
+                                <span class="text-sm font-bold text-gray-800 group-hover:text-red-600 group-focus:text-red-600 dark:text-neutral-200 dark:group-hover:text-red-500 dark:group-focus:text-red-500">
+                                7 Principles of Icon Design
+                                </span>
+                            </div>
+
+                            <div class="relative overflow-hidden rounded-lg shrink-0 size-20">
+                                <img class="absolute top-0 object-cover rounded-lg size-full start-0" src="https://images.unsplash.com/photo-1586232702178-f044c5f4d4b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80" alt="Blog Image">
+                            </div>
+                            </a>
+                            <!-- End Media -->
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End Sidebar -->
             </div>
+
+
         </div>
     </div>
     <!-- End Card Blog -->
