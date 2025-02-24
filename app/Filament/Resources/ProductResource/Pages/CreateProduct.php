@@ -41,7 +41,7 @@ class CreateProduct extends CreateRecord
     {
 
         $data['prod_name'] = ucwords($data['prod_name']);
-        $data['prod_slug'] = strtoupper($data['prod_slug']);
+        $data['prod_slug'] = strtolower($data['prod_slug']);
 
         return $data;
     }

@@ -14,4 +14,13 @@ class CreateBrand extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['brand_name'] = ucwords($data['brand_name']);
+        $data['brand_slug'] = strtolower($data['brand_slug']);
+        $data['brand_desc'] = ucfirst($data['brand_desc']);
+        return $data;
+    }
 }

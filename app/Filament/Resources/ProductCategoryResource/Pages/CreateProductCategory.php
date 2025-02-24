@@ -14,4 +14,14 @@ class CreateProductCategory extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+
+        $data['prod_cat_name'] = ucwords($data['prod_cat_name']);
+        $data['prod_slug'] = strtoupper($data['prod_slug']);
+        $data['prod_cat_desc'] = ucfirst($data['prod_cat_desc']);
+        return $data;
+    }
 }

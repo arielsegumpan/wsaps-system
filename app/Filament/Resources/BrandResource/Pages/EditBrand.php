@@ -21,4 +21,12 @@ class EditBrand extends EditRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['brand_name'] = ucwords($data['brand_name']);
+        $data['brand_slug'] = strtolower($data['brand_slug']);
+        $data['brand_desc'] = ucfirst($data['brand_desc']);
+        return $data;
+    }
 }

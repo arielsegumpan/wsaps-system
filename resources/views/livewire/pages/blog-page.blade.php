@@ -45,11 +45,13 @@
                 <div class="absolute inset-x-0 bottom-0 z-10">
                 <div class="flex flex-col h-full p-4 sm:p-6">
                     <h3 class="text-lg font-semibold text-white sm:text-3xl group-hover:text-white/80 group-focus:text-white/80">
-                    Facebook is creating a news section in Watch to feature breaking news
+                        {{ $post->title }}
                     </h3>
                     <p class="mt-2 text-white/80">
-                    Facebook launched the Watch platform in August
+                        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-500">{{ $post->blogCategory->cat_name }}</span>
                     </p>
+
+
                 </div>
                 </div>
             </a>

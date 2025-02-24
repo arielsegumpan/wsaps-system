@@ -1,14 +1,22 @@
-{{-- @dd($products) --}}
+{{-- <div>
+    @dd($productCategories)
+</div> --}}
+
 <div>
     <!-- Card Blog -->
     <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <!-- Title -->
         <div class="max-w-2xl mx-auto mb-10 text-center lg:mb-14">
-        <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Shop</h2>
-        <p class="mt-1 text-gray-600 dark:text-neutral-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium possimus repellendus ipsum.</p>
+            <h5 class="text-xs font-semibold text-gray-800 uppercase dark:text-white">{{ __('Product Categories') }}</h5>
+
+            <div class="flex items-center py-3 text-sm text-gray-800 before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-white dark:before:border-neutral-600 dark:after:border-neutral-600">
+                <h1 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">{{ $productCategories->prod_cat_name }}</h1>
+            </div>
+
         </div>
         <!-- End Title -->
 
+        <div class="flex flex-row items-center justify-between align-middle">
         <!-- Sort Menu -->
         <div class="m-1 hs-dropdown [--trigger:hover] relative inline-flex mb-4 md:mb-6">
             <button id="hs-dropdown-hover-event" type="button" class="inline-flex items-center px-4 py-3 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm hs-dropdown-toggle gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
@@ -39,11 +47,17 @@
         </div>
         <!-- End Sort menu -->
 
+        <a class="inline-flex items-center gap-x-1.5 text-sm text-gray-600 decoration-2 hover:underline focus:outline-none focus:underline dark:text-red-500" href="{{route('page.shop')}}">
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            {{ __('Back to Shop') }}
+        </a>
+
+        </div>
 
         <!-- Grid -->
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-            @foreach ($products as $product )
+            @foreach ($productCategories->products as $product )
 
             <!-- Card -->
             <div class="flex flex-col mb-4 bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
@@ -67,32 +81,6 @@
                                 ₱ {{ $product->prod_price}} - <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-lg text-sm font-bold bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500"> {{ $product->prod_qty }} </span>
                             </h5>
 
-                            <!-- Popover -->
-                            <div class="hs-tooltip [--trigger:hover] [--placement:left] inline-block">
-                                <div class="flex items-center justify-center text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm hs-tooltip-toggle size-10 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
-
-                                    <svg class="shrink-0 size-4" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                    </svg>
-
-
-                                    <span class="absolute z-10 invisible inline-block w-full max-w-xs px-3 py-3 text-sm text-gray-600 transition-opacity bg-white border rounded-lg shadow-md opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" role="tooltip">
-                                        <div class=" max-w-[15rem]">
-                                            <div class="inline-flex flex-row flex-wrap gap-2">
-                                                @forelse ($product->productCategories as $category )
-
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-500">{{ $category->prod_cat_name }}</span>
-
-                                                @empty
-                                                    <h1 class="text-gray-500 dar:text-white"> {{ __('No categories') }}</h1>
-                                                @endforelse
-                                            </div>
-
-                                        </div>
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- End Popover -->
 
                         </div>
                         <!-- EBD GROUP -->
@@ -103,7 +91,7 @@
 
                 <div class="p-5">
                     <button type="button" class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-center text-white align-middle bg-red-600 border border-transparent rounded-lg gap-x-2 hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
-                       {{ __('Add to cart') }}
+                        Add to cart
                         <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m5 11 4-7"></path>
                             <path d="m19 11-4-7"></path>
@@ -125,3 +113,4 @@
     </div>
     <!-- End Card Blog -->
 </div>
+
