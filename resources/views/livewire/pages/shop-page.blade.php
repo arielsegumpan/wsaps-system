@@ -4,14 +4,14 @@
     <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <!-- Title -->
         <div class="max-w-2xl mx-auto mb-10 text-center lg:mb-14">
-        <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Shop</h2>
-        <p class="mt-1 text-gray-600 dark:text-neutral-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium possimus repellendus ipsum.</p>
+        <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">{{ __('Shop') }}</h2>
+        <p class="mt-1 text-gray-600 dark:text-neutral-400">{{ __('Lorem ipsum dolor sit amet consectetur, adipisicing elit. Omnis, iste!') }}</p>
         </div>
         <!-- End Title -->
 
         <!-- Sort Menu -->
         <div class="m-1 hs-dropdown [--trigger:hover] relative inline-flex mb-4 md:mb-6">
-            <button id="hs-dropdown-hover-event" type="button" class="inline-flex items-center px-4 py-3 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm hs-dropdown-toggle gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+            <button id="hs-dropdown-hover-event" type="button" class="inline-flex items-center px-4 py-3 text-sm font-medium text-gray-800 border border-gray-200 rounded-lg shadow-sm bg-neutral-200 hs-dropdown-toggle gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
 
                 <svg class="size-4" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
@@ -46,7 +46,7 @@
             @foreach ($products as $product )
 
             <!-- Card -->
-            <div class="flex flex-col mb-4 bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
+            <div class="flex flex-col mb-4 border shadow-sm bg-neutral-200 rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
                 <a class="px-5 pt-5" href="{{ route('page.shop.single', $product->prod_slug) }}">
                     <div class="p-4 md:p-5">
                         <span class=" inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-800/30 dark:text-teal-500">
@@ -71,7 +71,7 @@
                             <div class="hs-tooltip [--trigger:hover] [--placement:left] inline-block">
                                 <div class="flex items-center justify-center text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm hs-tooltip-toggle size-10 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
 
-                                    <svg class="shrink-0 size-4" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <svg class="text-red-500 shrink-0 size-4" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                     </svg>
 
